@@ -124,8 +124,8 @@ create table productos(
 create table movimientos(
 	id_movimiento int primary key auto_increment,
     fecha datetime,
-    cantidad int,
-    salida bit,
+    cantidad int default 0,
+    salida bit default 0,
     id_almacen int,
     id_producto int,
     constraint id_almacen foreign key (id_almacen) references almacenes(id_almacen),
@@ -237,13 +237,3 @@ CREATE TABLE Incidentes (
     foreign key (cedula_a) references auxiliares(cedula),
     foreign key (ID_ruta) references rutas(ID_ruta)
 );
-
--- Triggers
--- movimiento
--- create trigger primer_movimiento
--- after insert on productos
--- for each row
--- begin
-	
--- end;
-
