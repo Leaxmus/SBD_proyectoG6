@@ -155,7 +155,7 @@ insert into productos(ID_producto, nombre, descripcion, tipo, valor, ID_proveedo
 (9, 'HepaCleanse', 'Protector hepático que favorece la desintoxicación del hígado.', 'Hepatoprotector.', 30.00, 9),
 (10, 'Antivirox', 'Tratamiento antiviral para infecciones respiratorias leves.', 'Antiviral.', 28.00, 9);
 
-insert into movimientos(ID_ralmacen, ID_almacen, ID_producto, fecha, cantidad, salida) values
+insert into movimientos(id_movimiento, ID_almacen, ID_producto, fecha, cantidad, salida) values
 (1, 1, 1, '2017-08-15 19:30:10', 100, 0),
 (2, 1, 1, '2017-08-16 07:30:10', 50, 1),
 (3, 2, 4, '2020-08-15 14:10:00', 100, 0),

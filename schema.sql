@@ -33,7 +33,7 @@ CREATE TABLE Gerentes_ventas (
 );
 
 create table proveedores(
-	id_proveedor int PRIMARY KEY,
+	id_proveedor int PRIMARY KEY auto_increment,
     razon_social varchar(255),
     direccion varchar(255),
     telefono varchar(20),
@@ -42,7 +42,7 @@ create table proveedores(
 
 -- TABLA DE PROOVEEDOR DE SEGURO 
 CREATE TABLE Proveedores_seguro (
-    ID_p_seguro INT PRIMARY KEY,
+    ID_p_seguro INT PRIMARY KEY auto_increment,
     razon_social VARCHAR(100) NOT NULL,
     telefono VARCHAR(20),
     direccion VARCHAR(255),
@@ -75,7 +75,7 @@ CREATE TABLE Auxiliares (
 
 -- TABLA DE SEGURO
 CREATE TABLE Seguros (
-    ID_seguro INT PRIMARY KEY,
+    ID_seguro INT PRIMARY KEY auto_increment,
     valor DOUBLE NOT NULL,
     costo DOUBLE NOT NULL,
     ID_p_seguro INT, 
@@ -104,7 +104,7 @@ CREATE TABLE Vehículos_Refrigerados (
 );
 
 create table almacenes(
-	id_almacen int PRIMARY KEY,
+	id_almacen int PRIMARY KEY auto_increment,
     capacidad double,
     direccion varchar(255),
     cedula int,
@@ -112,7 +112,7 @@ create table almacenes(
 );
 
 create table productos(
-	id_producto int PRIMARY KEY,
+	id_producto int PRIMARY KEY auto_increment,
     nombre varchar(255),
     descripcion varchar(255),
     tipo varchar(255),
@@ -122,7 +122,7 @@ create table productos(
 );
 
 create table movimientos(
-	id_ralmacen int primary key,
+	id_movimiento int primary key auto_increment,
     fecha datetime,
     cantidad int,
     salida bit,
@@ -133,8 +133,8 @@ create table movimientos(
 );
 
 create table inventario(
-	id_almacen int,
-    id_producto int,
+	id_almacen int not null,
+    id_producto int not null,
     cantidad int default 0,
     primary key(id_almacen, id_producto),
     foreign key (id_almacen) references almacenes(id_almacen),
@@ -142,7 +142,7 @@ create table inventario(
 );
 
 CREATE TABLE Clientes (
-    ID_cliente INT PRIMARY KEY,
+    ID_cliente INT PRIMARY KEY auto_increment,
     razon_social VARCHAR(255),
     telefono VARCHAR(20),
     direccion VARCHAR(255),
@@ -165,7 +165,7 @@ create table unidades_trabajo(
 
 -- Tabla Ruta --
 CREATE TABLE Rutas (
-    ID_ruta INT PRIMARY KEY,
+    ID_ruta INT PRIMARY KEY auto_increment,
     hora_inicio DATETIME NOT NULL,
     hora_final DATETIME NOT NULL,
     distancia DOUBLE,
@@ -189,12 +189,12 @@ CREATE TABLE Rutas_alternativas (
 );
 
 CREATE TABLE Puntos_entrega (
-    ID_p_entrega INT PRIMARY KEY,
+    ID_p_entrega INT PRIMARY KEY auto_increment,
     dirección VARCHAR(255)
 );
 
 CREATE TABLE Entregas (
-    ID_entrega INT PRIMARY KEY,
+    ID_entrega INT PRIMARY KEY auto_increment,
     estado BIT,
     fecha_entrega DATETIME,
     firma BLOB,
@@ -208,8 +208,8 @@ CREATE TABLE Entregas (
 );
 
 CREATE TABLE Detalles_entrega (
-    ID_entrega INT,
-    ID_producto INT,
+    ID_entrega INT not null,
+    ID_producto INT not null,
     cantidad INT,
     PRIMARY KEY (ID_entrega, ID_producto),
     FOREIGN KEY (ID_entrega) REFERENCES Entregas(ID_entrega),
@@ -217,8 +217,8 @@ CREATE TABLE Detalles_entrega (
 );
 
 CREATE TABLE Reclamos (
-    ID_entrega INT,
-    ID_cliente INT,
+    ID_entrega INT not null,
+    ID_cliente INT not null,
     descripción VARCHAR(255),
     PRIMARY KEY (ID_entrega, ID_cliente),
     FOREIGN KEY (ID_entrega) REFERENCES Entregas(ID_entrega),
@@ -227,7 +227,7 @@ CREATE TABLE Reclamos (
 
 -- Tabla Incidente --
 CREATE TABLE Incidentes (
-    ID_incidente INT PRIMARY KEY,
+    ID_incidente INT PRIMARY KEY auto_increment,
     fecha DATETIME NOT NULL,
     descripcion VARCHAR(255),
     ID_ruta int,
@@ -237,3 +237,13 @@ CREATE TABLE Incidentes (
     foreign key (cedula_a) references auxiliares(cedula),
     foreign key (ID_ruta) references rutas(ID_ruta)
 );
+
+-- Triggers
+-- movimiento
+-- create trigger primer_movimiento
+-- after insert on productos
+-- for each row
+-- begin
+	
+-- end;
+
