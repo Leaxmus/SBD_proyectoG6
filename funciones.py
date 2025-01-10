@@ -1,3 +1,4 @@
+
 def validar_numero(cadena):
     while not cadena.isdigit():
         cadena = input("Ingrese un número: ")
@@ -60,3 +61,156 @@ def agregar_almacen(cedulas):
 
 def mostrar_productos():
     pass
+
+
+
+
+
+
+#Elkin
+#agregar ruta
+def agregar_ruta():
+    hora_inicio = input("Ingrese la hora de inicio (HH:MM): ")
+    hora_final = input("Ingrese la hora final (HH:MM): ")
+    distancia = validar_decimal(input("Ingrese la distancia de la ruta (km): "))
+    estado = input("Ingrese el estado de la ruta (Activo/Inactivo): ")
+
+    cédula_operaciones = validar_numero(input("Ingrese la cédula del gerente de operaciones: "))
+    
+    query_ruta = "INSERT INTO rutas (hora_inicio, hora_final, distancia, estado, cedula_operaciones) VALUES (%s, %s, %s, %s, %s)"
+    datos_ruta = (hora_inicio, hora_final, distancia, estado, cédula_operaciones)
+    
+    return query_ruta, datos_ruta
+# consultar ruta (ejemplo GENERAL )
+def consultar_rutas():
+    query = "SELECT * FROM rutas"
+    return query
+
+#actualizar ruta
+def actualizar_ruta():
+    id_ruta = validar_numero(input("Ingrese el ID de la ruta a actualizar: "))
+    hora_inicio = input("Ingrese la nueva hora de inicio (HH:MM): ")
+    hora_final = input("Ingrese la nueva hora final (HH:MM): ")
+    distancia = validar_decimal(input("Ingrese la nueva distancia de la ruta (km): "))
+    estado = input("Ingrese el nuevo estado de la ruta (Activo/Inactivo): ")
+
+    query_ruta = "UPDATE rutas SET hora_inicio = %s, hora_final = %s, distancia = %s, estado = %s WHERE id_ruta = %s"
+    datos_ruta = (hora_inicio, hora_final, distancia, estado, id_ruta)
+
+    return query_ruta, datos_ruta
+
+#eliminar ruta
+def eliminar_ruta():
+    id_ruta = validar_numero(input("Ingrese el ID de la ruta a eliminar: "))
+    query_ruta = "DELETE FROM rutas WHERE id_ruta = %s"
+    datos_ruta = (id_ruta,)
+    return query_ruta, datos_ruta
+
+
+#agregar punto de entrega
+def agregar_punto_entrega():
+    direccion = input("Ingrese la dirección del punto de entrega: ")
+    id_ruta = validar_numero(input("Ingrese el ID de la ruta asociada: "))
+    query_punto = "INSERT INTO puntos_entrega (direccion, id_ruta) VALUES (%s, %s)"
+    datos_punto = (direccion, id_ruta)
+    return query_punto, datos_punto
+
+#consultar puntos de entrega
+def consultar_puntos_entrega():
+    query = "SELECT * FROM puntos_entrega"
+    return query
+
+#actualizar putno de entrega
+def actualizar_punto_entrega():
+    id_punto = validar_numero(input("Ingrese el ID del punto de entrega a actualizar: "))
+    direccion = input("Ingrese la nueva dirección del punto de entrega: ")
+    id_ruta = validar_numero(input("Ingrese el nuevo ID de la ruta asociada: "))
+    query_punto = "UPDATE puntos_entrega SET direccion = %s, id_ruta = %s WHERE id_punto_entrega = %s"
+    datos_punto = (direccion, id_ruta, id_punto)
+    return query_punto, datos_punto
+
+#elimitar punto de entrega
+def eliminar_punto_entrega():
+    id_punto = validar_numero(input("Ingrese el ID del punto de entrega a eliminar: "))
+    query_punto = "DELETE FROM puntos_entrega WHERE id_punto_entrega = %s"
+    datos_punto = (id_punto,)
+    return query_punto, datos_punto
+
+#agregar cliente
+def agregar_cliente():
+    razon_social = input("Ingrese la razón social del cliente: ")
+    telefono = input("Ingrese el teléfono del cliente: ")
+    direccion = input("Ingrese la dirección del cliente: ")
+    correo = input("Ingrese el correo electrónico del cliente: ")
+
+    query_cliente = "INSERT INTO clientes (razon_social, telefono, direccion, correo) VALUES (%s, %s, %s, %s)"
+    datos_cliente = (razon_social, telefono, direccion, correo)
+
+    return query_cliente, datos_cliente
+
+#consultar cliente TOTALES(GENERAL )
+def consultar_clientes():
+    query = "SELECT * FROM clientes"
+    return query
+
+#actualizar cliente
+def actualizar_cliente():
+    id_cliente = validar_numero(input("Ingrese el ID del cliente a actualizar: "))
+    razon_social = input("Ingrese la nueva razón social del cliente: ")
+    telefono = input("Ingrese el nuevo teléfono del cliente: ")
+    direccion = input("Ingrese la nueva dirección del cliente: ")
+    correo = input("Ingrese el nuevo correo electrónico del cliente: ")
+
+    query_cliente = "UPDATE clientes SET razon_social = %s, telefono = %s, direccion = %s, correo = %s WHERE id_cliente = %s"
+    datos_cliente = (razon_social, telefono, direccion, correo, id_cliente)
+
+    return query_cliente, datos_cliente
+
+#eliminar cliente
+def eliminar_cliente():
+    id_cliente = validar_numero(input("Ingrese el ID del cliente a eliminar: "))
+
+    query_cliente = "DELETE FROM clientes WHERE id_cliente = %s"
+    datos_cliente = (id_cliente,)
+
+    return query_cliente, datos_cliente
+
+#agregar entrega
+def agregar_entrega():
+    estado = input("Ingrese el estado de la entrega (Pendiente/Completada): ")
+    fecha_entrega = input("Ingrese la fecha de entrega (YYYY-MM-DD): ")
+    firma = input("Ingrese el nombre del receptor que firma la entrega: ")
+    valor_total = validar_decimal(input("Ingrese el valor total de la entrega: "))
+    id_ruta = validar_numero(input("Ingrese el ID de la ruta asociada: "))
+
+    query_entrega = "INSERT INTO entregas (estado, fecha_entrega, firma, valor_total, id_ruta) VALUES (%s, %s, %s, %s, %s)"
+    datos_entrega = (estado, fecha_entrega, firma, valor_total, id_ruta)
+
+    return query_entrega, datos_entrega
+
+#consultar entregas TOTALES(GENERAL )
+def consultar_entregas():
+    query = "SELECT * FROM entregas"
+    return query
+
+#actualizar entrega
+def actualizar_entrega():
+    id_entrega = validar_numero(input("Ingrese el ID de la entrega a actualizar: "))
+    estado = input("Ingrese el nuevo estado de la entrega (Pendiente/Completada): ")
+    fecha_entrega = input("Ingrese la nueva fecha de entrega (YYYY-MM-DD): ")
+    firma = input("Ingrese el nuevo nombre del receptor que firma la entrega: ")
+    valor_total = validar_decimal(input("Ingrese el nuevo valor total de la entrega: "))
+
+    query_entrega = "UPDATE entregas SET estado = %s, fecha_entrega = %s, firma = %s, valor_total = %s WHERE id_entrega = %s"
+    datos_entrega = (estado, fecha_entrega, firma, valor_total, id_entrega)
+
+    return query_entrega, datos_entrega
+
+#eliminar entrega por medio ID
+def eliminar_entrega():
+    id_entrega = validar_numero(input("Ingrese el ID de la entrega a eliminar: "))
+
+    query_entrega = "DELETE FROM entregas WHERE id_entrega = %s"
+    datos_entrega = (id_entrega,)
+
+    return query_entrega, datos_entrega
