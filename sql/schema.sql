@@ -195,10 +195,10 @@ CREATE TABLE Puntos_entrega (
 
 CREATE TABLE Entregas (
     ID_entrega INT PRIMARY KEY auto_increment,
-    estado BIT,
-    fecha_entrega DATETIME,
-    firma BLOB,
-    valor_total DOUBLE,
+    estado BIT default 0,
+    fecha_entrega DATETIME default null,
+    firma BLOB default null,
+    valor_total DOUBLE default 0,
     ID_cliente INT,
     ID_p_entrega INT,
     ID_ruta int null,
