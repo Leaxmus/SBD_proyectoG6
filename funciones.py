@@ -214,3 +214,203 @@ def eliminar_entrega():
     datos_entrega = (id_entrega,)
 
     return query_entrega, datos_entrega
+
+
+
+#Francis
+def agregar_conductor():
+    cedula = validar_numero(input("Ingrese la cédula del conductor: "))
+    primer_nombre = input("Ingrese el primer nombre del conductor: ")
+    segundo_nombre = input("Ingrese el segundo nombre del conductor: ")
+    primer_apellido = input("Ingrese el primer apellido del conductor: ")
+    segundo_apellido = input("Ingrese el segundo apellido del conductor: ")
+    telefono = input("Ingrese el teléfono del conductor: ")
+    correo = input("Ingrese el correo del conductor: ")
+    licencia = input("Ingrese el número de licencia: ")
+    experiencia = input("Ingrese la experiencia del conductor: ")
+
+    query_conductor = """
+    CALL AddConductor(%s, %s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_conductor = (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, licencia, experiencia)
+    
+    return query_conductor, datos_conductor
+
+
+def consultar_conductores():
+    query = "SELECT * FROM Conductores"
+    return query
+
+
+def actualizar_conductor():
+    cedula = validar_numero(input("Ingrese la cédula del conductor a actualizar: "))
+    primer_nombre = input("Ingrese el nuevo primer nombre: ")
+    segundo_nombre = input("Ingrese el nuevo segundo nombre: ")
+    primer_apellido = input("Ingrese el nuevo primer apellido: ")
+    segundo_apellido = input("Ingrese el nuevo segundo apellido: ")
+    telefono = input("Ingrese el nuevo teléfono: ")
+    correo = input("Ingrese el nuevo correo: ")
+    licencia = input("Ingrese el nuevo número de licencia: ")
+    experiencia = input("Ingrese la nueva experiencia: ")
+
+    query_conductor = """
+    CALL UpdateConductor(%s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_conductor = (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, licencia, experiencia)
+    
+    return query_conductor, datos_conductor
+
+
+def eliminar_conductor():
+    cedula = validar_numero(input("Ingrese la cédula del conductor a eliminar: "))
+
+    query_conductor = """
+    CALL DeleteConductor(%s);
+    """
+    datos_conductor = (cedula,)
+    
+    return query_conductor, datos_conductor
+
+
+
+def agregar_auxiliar():
+    cedula = validar_numero(input("Ingrese la cédula del auxiliar: "))
+    primer_nombre = input("Ingrese el primer nombre del auxiliar: ")
+    segundo_nombre = input("Ingrese el segundo nombre del auxiliar: ")
+    primer_apellido = input("Ingrese el primer apellido del auxiliar: ")
+    segundo_apellido = input("Ingrese el segundo apellido del auxiliar: ")
+    telefono = input("Ingrese el teléfono del auxiliar: ")
+    correo = input("Ingrese el correo del auxiliar: ")
+
+    query_auxiliar = """
+    CALL AddAuxiliar(%s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_auxiliar = (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo)
+    
+    return query_auxiliar, datos_auxiliar
+
+
+def consultar_auxiliares():
+    query = "SELECT * FROM Auxiliares"
+    return query
+
+
+def actualizar_auxiliar():
+    cedula = validar_numero(input("Ingrese la cédula del auxiliar a actualizar: "))
+    primer_nombre = input("Ingrese el nuevo primer nombre: ")
+    segundo_nombre = input("Ingrese el nuevo segundo nombre: ")
+    primer_apellido = input("Ingrese el nuevo primer apellido: ")
+    segundo_apellido = input("Ingrese el nuevo segundo apellido: ")
+    telefono = input("Ingrese el nuevo teléfono: ")
+    correo = input("Ingrese el nuevo correo: ")
+
+    query_auxiliar = """
+    CALL UpdateAuxiliar(%s, %s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_auxiliar = (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo)
+    
+    return query_auxiliar, datos_auxiliar
+
+
+def eliminar_auxiliar():
+    cedula = validar_numero(input("Ingrese la cédula del auxiliar a eliminar: "))
+
+    query_auxiliar = """
+    CALL DeleteAuxiliar(%s);
+    """
+    datos_auxiliar = (cedula,)
+    
+    return query_auxiliar, datos_auxiliar
+
+
+
+def agregar_vehiculo():
+    placa = input("Ingrese la placa del vehículo: ")
+    capacidad = validar_decimal(input("Ingrese la capacidad del vehículo (en toneladas): "))
+    datalogger = input("Ingrese el número de datalogger: ")
+    fecha_mantenimiento = input("Ingrese la fecha de mantenimiento (YYYY-MM-DD): ")
+    id_seguro = validar_numero(input("Ingrese el ID del seguro: "))
+
+    query_vehiculo = """
+    CALL AddVehiculo(%s, %s, %s, %s, %s);
+    """
+    datos_vehiculo = (placa, capacidad, datalogger, fecha_mantenimiento, id_seguro)
+    
+    return query_vehiculo, datos_vehiculo
+
+
+def consultar_vehiculos():
+    query = "SELECT * FROM Vehículos"
+    return query
+
+
+def actualizar_vehiculo():
+    placa = input("Ingrese la placa del vehículo a actualizar: ")
+    capacidad = validar_decimal(input("Ingrese la nueva capacidad del vehículo (en toneladas): "))
+    datalogger = input("Ingrese el nuevo número de datalogger: ")
+    fecha_mantenimiento = input("Ingrese la nueva fecha de mantenimiento (YYYY-MM-DD): ")
+    id_seguro = validar_numero(input("Ingrese el nuevo ID del seguro: "))
+
+    query_vehiculo = """
+    CALL UpdateVehiculo(%s, %s, %s, %s, %s);
+    """
+    datos_vehiculo = (placa, capacidad, datalogger, fecha_mantenimiento, id_seguro)
+    
+    return query_vehiculo, datos_vehiculo
+
+
+def eliminar_vehiculo():
+    placa = input("Ingrese la placa del vehículo a eliminar: ")
+
+    query_vehiculo = """
+    CALL DeleteVehiculo(%s);
+    """
+    datos_vehiculo = (placa,)
+    
+    return query_vehiculo, datos_vehiculo
+
+
+
+def agregar_unidad_trabajo():
+    cedula_conductor = validar_numero(input("Ingrese la cédula del conductor: "))
+    cedula_auxiliar = validar_numero(input("Ingrese la cédula del auxiliar: "))
+    placa_vehiculo = input("Ingrese la placa del vehículo: ")
+    placa_vehiculo_refrigerado = input("Ingrese la placa del vehículo refrigerado (opcional): ")
+
+    query_unidad_trabajo = """
+    CALL AddUnidadTrabajo(%s, %s, %s, %s);
+    """
+    datos_unidad_trabajo = (cedula_conductor, cedula_auxiliar, placa_vehiculo, placa_vehiculo_refrigerado)
+    
+    return query_unidad_trabajo, datos_unidad_trabajo
+
+
+def consultar_unidades_trabajo():
+    query = "SELECT * FROM unidades_trabajo"
+    return query
+
+
+def actualizar_unidad_trabajo():
+    cedula_conductor = validar_numero(input("Ingrese la cédula del conductor: "))
+    cedula_auxiliar = validar_numero(input("Ingrese la cédula del auxiliar: "))
+    placa_vehiculo = input("Ingrese la nueva placa del vehículo: ")
+    placa_vehiculo_refrigerado = input("Ingrese la nueva placa del vehículo refrigerado (opcional): ")
+
+    query_unidad_trabajo = """
+    CALL UpdateUnidadTrabajo(%s, %s, %s, %s);
+    """
+    datos_unidad_trabajo = (cedula_conductor, cedula_auxiliar, placa_vehiculo, placa_vehiculo_refrigerado)
+    
+    return query_unidad_trabajo, datos_unidad_trabajo
+
+
+def eliminar_unidad_trabajo():
+    cedula_conductor = validar_numero(input("Ingrese la cédula del conductor: "))
+    cedula_auxiliar = validar_numero(input("Ingrese la cédula del auxiliar: "))
+
+    query_unidad_trabajo = """
+    CALL DeleteUnidadTrabajo(%s, %s);
+    """
+    datos_unidad_trabajo = (cedula_conductor, cedula_auxiliar)
+    
+    return query_unidad_trabajo, datos_unidad_trabajo
