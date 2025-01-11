@@ -21,10 +21,18 @@ def menu():
         usr1 = validar_numero(input("Ingrese el número de la opción deseada: "))
 
     usr2 = 0
-    while usr2 < 1 or usr2 > 2:
+    while usr2 < 1 or usr2 > 12:
         print("Para")
         print("1. Productos")
         print("2. Almacenes")
+        print("3. Rutas")
+        print("4. Entregas")
+        print("5. Puntos de Entrega")
+        print("6. Clientes")
+        print("7. Conductores")
+        print("8. Auxiliar")
+        print("9. Vehiculo")
+        print("10. Unidad de trabajo")
         usr2 = validar_numero(input("Ingrese el número de la opción deseada: "))
         
     return usr1, usr2
@@ -105,8 +113,8 @@ def eliminar_almacen():
 #Elkin
 #agregar ruta
 def agregar_ruta():
-    hora_inicio = input("Ingrese la hora de inicio (HH:MM): ")
-    hora_final = input("Ingrese la hora final (HH:MM): ")
+    hora_inicio = input("Ingrese la hora de inicio (HH-MM): ")
+    hora_final = input("Ingrese la hora final (HH-MM): ")
     distancia = validar_decimal(input("Ingrese la distancia de la ruta (km): "))
     estado = input("Ingrese el estado de la ruta (Activo/Inactivo): ")
 
