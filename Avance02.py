@@ -60,6 +60,20 @@ try:
                 query_ruta, datos_ruta = f.eliminar_ruta()
                 cursor.execute(query_ruta, datos_ruta)
 
+        elif tabla == 4:
+            if opcion == 1:
+                argumentos_entrega = f.agregar_entrega()
+                relustado = cursor.callproc("registrar_entrega", argumentos_entrega)
+                id = resultado[3]
+                num_productos = f.validar_numero("Número de productos: ")
+                for i in range(num_productos):
+                    argumentos_detalle = f.agregar_detalle_entrega(id)
+                    cursor.callproc("agregar_producto_entrega", argumentos_detalle)
+            elif opcion == 2:
+                cursor.execute(f.consultar_entregas())
+                for entrega in cursor:
+                    print(entrega)
+
         # Cliente
         elif tabla == 6:
             if opcion == 1:
