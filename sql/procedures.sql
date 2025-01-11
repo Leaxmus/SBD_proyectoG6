@@ -87,6 +87,19 @@ begin
 end;
 // delimiter ;
 
+delimiter //
+create procedure actualizar_valor_total_entrega(in in_entrega int)
+begin
+    declare total double default 0;
+    select sum(valor * cantidad) into total
+    from detalle_entregas join productos using(id_producto)
+    where id_entrega = in_entrega;
+    update entregas
+    set valor_total = total
+    where id_entrega = in_entrega;
+end;
+// delimiter ;
+
 DELIMITER //
 CREATE PROCEDURE AddConductor (IN p_cedula INT, IN p_primer_nombre VARCHAR(50), IN p_segundo_nombre VARCHAR(50), IN p_primer_apellido VARCHAR(50),
     IN p_segundo_apellido VARCHAR(50), IN p_telefono VARCHAR(15), IN p_correo VARCHAR(100), IN p_licencia VARCHAR(50), IN p_experiencia VARCHAR(50)

@@ -3,11 +3,11 @@ from mysql.connector import errorcode
 import funciones as f
 
 try:
-    cnx = mysql.connector.connect(user='root', password='admin', host='localhost', database='transporte')
+    cnx = mysql.connector.connect(user='root', password='1234', host='localhost', database='transporte')
     cursor = cnx.cursor()
     
     opcion = 0
-    while opcion != 12:
+    while opcion != 5:
         opcion, tabla = f.menu()
         
         # Producto
@@ -73,6 +73,7 @@ try:
                 cursor.execute(f.consultar_entregas())
                 for entrega in cursor:
                     print(entrega)
+            
 
         # Cliente
         elif tabla == 6:
