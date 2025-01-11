@@ -11,12 +11,13 @@ def validar_decimal(cadena):
 
 def menu():
     usr1 = 0
-    while usr1 < 1 or usr1 > 4:
+    while usr1 < 1 or usr1 > 5:
         print("Desea")
         print("1. Crear registros")
         print("2. Consultar registros")
         print("3. Actualizar registros")
         print("4. Eliminar registros")
+        print("5. Salir")
         usr1 = validar_numero(input("Ingrese el número de la opción deseada: "))
 
     usr2 = 0
@@ -59,13 +60,47 @@ def agregar_almacen(cedulas):
 
     return query_almacen, datos_almacen
 
-def mostrar_productos():
-    pass
+def actualizar_producto():
+    id_producto = 0
+    while id_producto < 1 or id_producto > 10:
+        id_producto = validar_numero(input("Ingrese el ID del producto a actualizar(1-10): "))
 
+    nombre = input("Ingrese el nuevo nombre del producto: ")
+    descripcion = input("Ingrese la nueva descripción del producto: ")
+    tipo = input("Ingrese el nuevo tipo del producto: ")
+    valor = validar_decimal(input("Ingrese el nuevo valor del producto: "))
+    id_proveedor = 0
+    while id_proveedor < 1 or id_proveedor > 10:
+        id_proveedor = validar_numero(input("Ingrese el nuevo ID del proveedor(1-10): "))
+    argumentos_producto = (id_producto, nombre, descripcion, tipo, valor, id_proveedor)
+    return argumentos_producto
 
+def actualizar_almacen():
+    id_almacen = 0
+    while id_almacen < 1 or id_almacen > 10:
+        id_almacen = validar_numero(input("Ingrese el ID del almacén a actualizar(1-10): "))
 
+    capacidad = validar_decimal(input("Ingrese la nueva capacidad del almacén (m2): "))
+    direccion = input("Ingrese la nueva dirección del almacén: ")
+    cedula_admin = validar_numero(input("Ingrese la nueva cédula del administrador: "))
 
+    args_almacen = (id_almacen, capacidad, direccion, cedula_admin)
 
+    return args_almacen
+
+def eliminar_producto():
+    id_producto = 0
+    while id_producto < 1 or id_producto > 10:
+        id_producto = validar_numero(input("Ingrese el ID del producto a eliminar(1-10): "))
+
+    return (id_producto,)
+
+def eliminar_almacen():
+    id_almacen = 0
+    while id_almacen < 1 or id_almacen > 10:
+        id_almacen = validar_numero(input("Ingrese el ID del almacén a eliminar(1-10): "))
+
+    return (id_almacen,)
 
 #Elkin
 #agregar ruta

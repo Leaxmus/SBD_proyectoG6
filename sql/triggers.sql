@@ -16,6 +16,45 @@ begin
 end; //
 delimiter ;
 
+delimiter //
+create trigger antes_eliminar_producto
+before delete on productos
+for each row
+begin
+    declare num_movimientos int default 0;
+    select count(*) into num_movimientos
+    from movimientos
+    where id_producto = old.id_producto;
+    
+    if num_movimientos <> 1 then
+        signal sqlstate '45000'
+        set message_text = 'No se puede eliminar el producto, tiene movimientos asociados';
+    else
+        delete from inventario where id_producto = old.id_producto;
+        delete from movimientos where id_producto = old.id_producto;
+    end if;
+end; //
+// delimiter ;
+
+delimiter //
+create trigger antes_eliminar_almacen
+before delete on almacenes
+for each row
+begin
+    declare num_productos int default 0;
+    select count(*) into num_productos
+    from inventario
+    where id_almacen = old.id_almacen;
+    
+    if num_productos <> 0 then
+        signal sqlstate '45000'
+        set message_text = 'No se puede eliminar el almacen, tiene productos asociados';
+    else
+        delete from almacenes where id_almacen = old.id_almacen;
+    end if;
+end;
+// delimiter ;
+
 DELIMITER //
 CREATE TRIGGER BeforeInsertConductor
 BEFORE INSERT ON Conductores

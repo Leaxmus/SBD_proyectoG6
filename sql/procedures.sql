@@ -14,6 +14,53 @@ begin
 end ;
 // delimiter ;
 
+delimiter //
+create procedure mostrar_productos(in in_almacen int)
+begin
+	if in_almacen = 0 then
+		select nombre, descripcion, tipo, valor, razon_social, sum(cantidad) as cantidad_disponible
+		from productos join inventario using(id_producto) join proveedores using (id_proveedor)
+		group by id_producto;
+	else
+		select nombre, descripcion, tipo, valor, razon_social, sum(cantidad) as cantidad_disponible
+		from productos join inventario using(id_producto) join proveedores using (id_proveedor)
+        where id_almacen = in_almacen
+		group by id_producto;
+	end if;
+end;
+// delimiter ;
+
+delimiter //
+create procedure actualizar_producto(in in_producto int, in in_nombre varchar(255), in in_descripcion varchar(255), in in_tipo varchar(255), in_valor double(255, 2), in in_proveedor int)
+begin
+	update productos
+    set  nombre = in_nombre, descripcion = in_descripcion, tipo = in_tipo, valor = in_valor, id_proveedor = in_proveedor
+    where id_producto = in_producto;
+end;
+// delimiter ;
+
+delimiter //
+create procedure eliminar_producto(in in_producto int)
+begin
+    delete from productos where id_producto = in_producto;
+end;
+// delimiter ;
+
+delimiter //
+create procedure actualizar_almacen(in in_almacen int, in_capacidad double, in in_direccion varchar(255), in in_cedula int)
+begin
+    update almacenes
+    set  capacidad = in_capacidad, direccion = in_direccion, cedula = in_cedula
+    where id_almacen = in_almacen;
+end;
+// delimiter ;
+
+delimiter //
+create procedure eliminar_almacen(in in_almacen int)
+begin
+    delete from almacenes where id_almacen = in_almacen;
+end;
+// delimiter ;
 
 DELIMITER //
 CREATE PROCEDURE AddConductor (IN p_cedula INT, IN p_primer_nombre VARCHAR(50), IN p_segundo_nombre VARCHAR(50), IN p_primer_apellido VARCHAR(50),
