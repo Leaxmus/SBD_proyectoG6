@@ -280,7 +280,6 @@ END;
 -- Elkin 
 -- Ruta
 DELIMITER //
-
 CREATE PROCEDURE InsertarRuta(IN p_id_ruta INT,IN p_hora_inicio DATETIME,IN p_hora_final DATETIME,IN p_placa_vehiculo VARCHAR(10),IN p_distancia INT,IN p_estado INT)
 BEGIN
     DECLARE placa_existente INT;
@@ -297,7 +296,7 @@ BEGIN
     VALUES (p_id_ruta, p_hora_inicio, p_hora_final, p_placa_vehiculo, p_distancia, p_estado);
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
 
 -- actualizar ruta 
 DELIMITER //
@@ -316,12 +315,11 @@ BEGIN
     WHERE ID_ruta = p_id_ruta;
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
 
 
 -- elimiar ruta
 DELIMITER //
-
 CREATE PROCEDURE EliminarRuta(IN p_id_ruta INT)
 BEGIN
     DECLARE entregas_existentes INT;
@@ -336,7 +334,7 @@ BEGIN
     WHERE ID_ruta = p_id_ruta;
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 
 -- nueva entrega 
@@ -351,8 +349,7 @@ BEGIN
     VALUES (p_id_entrega, p_fecha_entrega, p_estado, p_valor_total, p_id_ruta, p_id_cliente, p_firma);
     COMMIT;
 END ;
-
-DELIMITER //
+// DELIMITER ;
 
 -- actualizar entrega 
 DELIMITER //
@@ -371,7 +368,7 @@ BEGIN
     WHERE ID_entrega = p_id_entrega;
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 
 -- eliminar entrega
@@ -389,8 +386,7 @@ BEGIN
     DELETE FROM Entregas WHERE ID_entrega = p_id_entrega;
     COMMIT;
 END ;
-
-DELIMITER //
+// DELIMITER ;
 
 
 --Ruta alternas
@@ -410,7 +406,7 @@ BEGIN
     INSERT INTO Rutas_alternativas (ID_ruta, ID_ruta_a) VALUES (p_id_ruta, p_id_ruta_a);
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 
 DELIMITER //
@@ -429,7 +425,7 @@ BEGIN
     WHERE ID_ruta = p_id_ruta;
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 
 DELIMITER //
@@ -438,14 +434,13 @@ BEGIN
     DELETE FROM Rutas_alternativas 
     WHERE ID_ruta = p_id_ruta AND ID_ruta_a = p_id_ruta_a;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 
 DELIMITER //
 -- Insertar en Gerentes_Operaciones
 CREATE PROCEDURE insertar_gerente_operaciones(IN cedula INT,IN primer_nombre VARCHAR(50),IN segundo_nombre VARCHAR(50),IN primer_apellido VARCHAR(50),IN segundo_apellido VARCHAR(50),IN telefono VARCHAR(15),IN correo VARCHAR(100))
 BEGIN
-    START TRANSACTION;
     DECLARE gerente_existente INT;
     START TRANSACTION;
     -- Validar que no exista un gerente con la misma cédula
@@ -459,7 +454,7 @@ BEGIN
     VALUES(cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo);
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 
 DElimiter //
@@ -476,16 +471,15 @@ BEGIN
     WHERE cedula = cedula;
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 DELIMITER //
-
 CREATE PROCEDURE eliminar_gerente_operaciones(IN cedula INT)
 BEGIN
     DELETE FROM Gerentes_Operaciones
     WHERE cedula = cedula;
 END;
-DELIMITER //
+// DELIMITER ;
 
 -- Puntos de entrega
 DELIMITER //
@@ -496,7 +490,7 @@ BEGIN
     VALUES (p_id_punto, p_direccion);
     COMMIT;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE ActualizarPuntoEntrega(IN p_id_punto INT,IN p_direccion VARCHAR(255))
@@ -507,15 +501,14 @@ BEGIN
     WHERE id_punto_entrega = p_id_punto;
     COMMIT;
 END ;
-DELIMITER//
+// DELIMITER ;
 
 DELIMITER //
-
 CREATE PROCEDURE EliminarPuntoEntrega(IN p_id_punto INT)
 BEGIN
     DELETE FROM Puntos_entrega WHERE id_punto_entrega = p_id_punto;
 END ;
-DELIMITER //
+// DELIMITER ;
 
 -- Cliente 
 DELIMITER //
@@ -534,7 +527,7 @@ BEGIN
     VALUES (p_razon_social, p_telefono, p_direccion, p_correo, p_cedula);
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE ActualizarCliente(IN p_id_cliente INT, IN p_razon_social VARCHAR(255), IN p_telefono VARCHAR(20), IN p_direccion VARCHAR(255),IN p_correo VARCHAR(100))
@@ -553,7 +546,7 @@ BEGIN
     WHERE ID_cliente = p_id_cliente;
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE EliminarCliente(IN p_id_cliente INT)
@@ -569,7 +562,7 @@ BEGIN
     DELETE FROM Clientes WHERE ID_cliente = p_id_cliente;
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
 
 
 -- gerente de ventas 
@@ -588,8 +581,7 @@ BEGIN
     VALUES (p_cedula, p_primer_nombre, p_segundo_nombre, p_primer_apellido, p_segundo_apellido, p_telefono, p_correo);
     COMMIT;
 END;
-DELIMITER //
-
+// DELIMITER ;
 
 
 DELIMITER //
@@ -610,7 +602,7 @@ BEGIN
     WHERE cedula = p_cedula;
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE EliminarGerenteVentas(IN p_cedula INT)
@@ -626,4 +618,4 @@ BEGIN
     DELETE FROM Gerentes_ventas WHERE cedula = p_cedula;
     COMMIT;
 END;
-DELIMITER //
+// DELIMITER ;
