@@ -47,3 +47,64 @@ SELECT e.fecha_entrega, COUNT(e.ID_entrega) AS total_entregas, SUM(e.valor_total
 FROM Entregas e
 GROUP BY e.fecha_entrega
 ORDER BY e.fecha_entrega DESC;
+
+
+CREATE VIEW DetallesPersonal AS
+SELECT 
+    c.cedula AS cedula_conductor,
+    c.primer_nombre AS nombre_conductor,
+    c.primer_apellido AS apellido_conductor,
+    c.telefono AS telefono_conductor,
+    c.correo AS correo_conductor,
+    c.licencia AS licencia_conductor,
+    c.experiencia AS experiencia_conductor,
+    a.cedula AS cedula_auxiliar,
+    a.primer_nombre AS nombre_auxiliar,
+    a.primer_apellido AS apellido_auxiliar,
+    a.telefono AS telefono_auxiliar,
+    a.correo AS correo_auxiliar
+FROM Conductores c
+LEFT JOIN Auxiliares a ON c.cedula = a.cedula;
+
+
+CREATE VIEW AsignacionesConductoresAuxiliares AS
+SELECT 
+    c.cedula AS cedula_conductor,
+    c.primer_nombre AS nombre_conductor,
+    c.primer_apellido AS apellido_conductor,
+    a.cedula AS cedula_auxiliar,
+    a.primer_nombre AS nombre_auxiliar,
+    a.primer_apellido AS apellido_auxiliar,
+    v.placa AS placa_vehiculo,
+    v.capacidad AS capacidad_vehiculo,
+    v.datalogger AS datalogger_vehiculo
+FROM unidades_trabajo ut
+JOIN Conductores c ON ut.cedula_c = c.cedula
+JOIN Auxiliares a ON ut.cedula_a = a.cedula
+JOIN Vehículos v ON ut.placa = v.placa;
+
+
+CREATE VIEW ConductoresSinVehiculo AS
+SELECT 
+    c.cedula AS cedula_conductor,
+    c.primer_nombre AS nombre_conductor,
+    c.primer_apellido AS apellido_conductor,
+    c.telefono AS telefono_conductor,
+    c.correo AS correo_conductor,
+    c.licencia AS licencia_conductor,
+    c.experiencia AS experiencia_conductor
+FROM Conductores c
+LEFT JOIN unidades_trabajo ut ON c.cedula = ut.cedula_c
+WHERE ut.cedula_c IS NULL;
+
+
+CREATE VIEW AuxiliaresSinConductor AS
+SELECT 
+    a.cedula AS cedula_auxiliar,
+    a.primer_nombre AS nombre_auxiliar,
+    a.primer_apellido AS apellido_auxiliar,
+    a.telefono AS telefono_auxiliar,
+    a.correo AS correo_auxiliar
+FROM Auxiliares a
+LEFT JOIN unidades_trabajo ut ON a.cedula = ut.cedula_a
+WHERE ut.cedula_a IS NULL;
