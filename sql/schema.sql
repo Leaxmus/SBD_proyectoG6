@@ -237,3 +237,36 @@ CREATE TABLE Incidentes (
     foreign key (cedula_a) references auxiliares(cedula),
     foreign key (ID_ruta) references rutas(ID_ruta)
 );
+
+
+-- Crear usuarios
+CREATE USER 'GersonL'@'%' IDENTIFIED BY '123';
+CREATE USER 'ElkinS'@'%' IDENTIFIED BY '1234';
+CREATE USER 'SamuelM'@'%' IDENTIFIED BY '100';
+CREATE USER 'FrancisJ'@'%' IDENTIFIED BY '999';
+CREATE USER 'IreneCheung'@'%' IDENTIFIED BY '01234';
+
+-- GersonL
+GRANT SELECT ON transporte.ReporteProductosAlmacen TO 'GersonL'@'%';
+GRANT SELECT ON transporte.ReporteMovimientosProductos TO 'GersonL'@'%';
+GRANT EXECUTE ON PROCEDURE transporte.agregar_nuevo_producto TO 'GersonL'@'%';
+
+-- ElkinS
+GRANT SELECT ON transporte.ReporteTotalProductos TO 'ElkinS'@'%';
+GRANT SELECT ON transporte.ReporteRutasActivas TO 'ElkinS'@'%';
+GRANT EXECUTE ON PROCEDURE transporte.AddConductor TO 'ElkinS'@'%';
+
+-- SamuelM
+GRANT SELECT ON transporte.ReporteProductosEntrega TO 'SamuelM'@'%';
+GRANT SELECT ON transporte.ReporteEntregasConFirma TO 'SamuelM'@'%';
+GRANT EXECUTE ON PROCEDURE transporte.DeleteConductor TO 'SamuelM'@'%';
+
+-- FrancisJ
+GRANT SELECT ON transporte.ReporteGerentesRutasAsignadas TO 'FrancisJ'@'%';
+GRANT SELECT ON transporte.ReporteEntregasPorClienteYEstado TO 'FrancisJ'@'%';
+GRANT EXECUTE ON PROCEDURE transporte.InsertarRuta TO 'FrancisJ'@'%';
+
+-- IreneCheung
+GRANT SELECT ON transporte.ReporteRutasConEntregasPendientes TO 'IreneCheung'@'%';
+GRANT SELECT ON transporte.ReporteGerentesVentasPorCliente TO 'IreneCheung'@'%';
+GRANT EXECUTE ON PROCEDURE transporte.registrar_entrega TO 'IreneCheung'@'%';
