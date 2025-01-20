@@ -301,7 +301,7 @@ DELIMITER //
 
 -- actualizar ruta 
 DELIMITER //
-CREATE PROCEDURE ActualizarRuta(IN p_id_ruta INT, IN p_hora_inicio DATETIME, IN p_hora_final DATETIME, IN p_distancia DOUBLE)
+CREATE PROCEDURE ActualizarRuta(IN p_id_ruta INT, IN p_hora_inicio DATETIME, IN p_hora_final DATETIME, IN p_distancia DOUBLE, IN p_estado BIT)
 BEGIN
     DECLARE ruta_existente INT;
     START TRANSACTION;
@@ -312,7 +312,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La ruta no existe.';
     END IF;
     UPDATE Rutas
-    SET hora_inicio = p_hora_inicio, hora_final = p_hora_final, distancia = p_distancia
+    SET hora_inicio = p_hora_inicio, hora_final = p_hora_final, distancia = p_distancia, estado=p_estado
     WHERE ID_ruta = p_id_ruta;
     COMMIT;
 END;

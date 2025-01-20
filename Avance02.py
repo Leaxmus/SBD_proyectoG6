@@ -3,7 +3,7 @@ from mysql.connector import errorcode
 import funciones as f
 
 try:
-    cnx = mysql.connector.connect(user='root', password='1234', host='localhost', database='transporte')
+    cnx = mysql.connector.connect(user='root', password='admin', host='localhost', database='transporte')
     cursor = cnx.cursor()
     
     opcion = 0
@@ -46,50 +46,53 @@ try:
 
         # Ruta
         elif tabla == 3:
-            if opcion == 1:
-                query_ruta, datos_ruta = f.agregar_ruta()
-                cursor.execute(query_ruta, datos_ruta)
-            elif opcion == 2:
-                cursor.execute(f.consultar_rutas())
-                for ruta in cursor:
-                    print(ruta)
-            elif opcion == 3:
-                query_ruta, datos_ruta = f.actualizar_ruta()
-                cursor.execute(query_ruta, datos_ruta)
-            elif opcion == 4:
-                query_ruta, datos_ruta = f.eliminar_ruta()
-                cursor.execute(query_ruta, datos_ruta)
+                if opcion == 1:
+                    query_ruta, datos_ruta = f.agregar_ruta()  
+                    cursor.callproc("InsertarRuta", datos_ruta)  
+                elif opcion == 2:
+                    cursor.execute(f.consultar_rutas())
+                    for ruta in cursor:
+                        print(ruta)
+                elif opcion == 3:
+                    query_ruta, datos_ruta = f.actualizar_ruta()  
+                    cursor.callproc("ActualizarRuta", datos_ruta) 
+                elif opcion == 4:
+                    query_ruta, datos_ruta = f.eliminar_ruta()  
+                    cursor.callproc("EliminarRuta", datos_ruta)  
 
+        #Entrega
+        # Entrega
         elif tabla == 4:
             if opcion == 1:
                 argumentos_entrega = f.agregar_entrega()
-                relustado = cursor.callproc("registrar_entrega", argumentos_entrega)
-                id = resultado[3]
-                num_productos = f.validar_numero("Número de productos: ")
-                for i in range(num_productos):
-                    argumentos_detalle = f.agregar_detalle_entrega(id)
-                    cursor.callproc("agregar_producto_entrega", argumentos_detalle)
+                resultado = cursor.callproc("InsertarEntrega", argumentos_entrega)    
             elif opcion == 2:
                 cursor.execute(f.consultar_entregas())
                 for entrega in cursor:
                     print(entrega)
-            
+            elif opcion == 3:
+                query_entrega, datos_entrega = f.actualizar_entrega()
+                cursor.callproc("ActualizarEntrega",datos_entrega )
+            elif opcion== 4:
+                id_entrega = f.eliminar_entrega()
+                cursor.callproc("EliminarEntrega",id_entrega)
 
-        # Cliente
+        #cliente
         elif tabla == 6:
             if opcion == 1:
-                query_cliente, datos_cliente = f.agregar_cliente()
-                cursor.execute(query_cliente, datos_cliente)
+                query_cliente, datos_cliente = f.InsertarCliente()  
+                cursor.callproc("InsertarCliente", datos_cliente) 
             elif opcion == 2:
-                cursor.execute(f.consultar_clientes())
+                query = f.consultar_clientes() 
+                cursor.execute(query)
                 for cliente in cursor:
                     print(cliente)
             elif opcion == 3:
-                query_cliente, datos_cliente = f.actualizar_cliente()
-                cursor.execute(query_cliente, datos_cliente)
+                query_cliente, datos_cliente = f.actualizar_cliente()  
+                cursor.callproc("ActualizarCliente", datos_cliente)  
             elif opcion == 4:
-                query_cliente, datos_cliente = f.eliminar_cliente()
-                cursor.execute(query_cliente, datos_cliente)
+                id_cliente = f.eliminar_cliente()
+                cursor.callproc("EliminarCliente", id_cliente)  
         
        #Conductores
         elif tabla == 7:
