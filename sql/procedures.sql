@@ -295,7 +295,25 @@ BEGIN
 END;
 DELIMITER //
 
--- actualizar ruta pero no veo forma 
+-- actualizar ruta 
+DELIMITER //
+CREATE PROCEDURE ActualizarRuta(IN p_id_ruta INT, IN p_hora_inicio DATETIME, IN p_hora_final DATETIME, IN p_distancia DOUBLE)
+BEGIN
+    DECLARE ruta_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO ruta_existente
+    FROM Rutas
+    WHERE ID_ruta = p_id_ruta;
+    IF ruta_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La ruta no existe.';
+    END IF;
+    UPDATE Rutas
+    SET hora_inicio = p_hora_inicio, hora_final = p_hora_final, distancia = p_distancia
+    WHERE ID_ruta = p_id_ruta;
+    COMMIT;
+END;
+DELIMITER //
+
 
 -- elimiar ruta
 DELIMITER //
@@ -464,8 +482,6 @@ BEGIN
     WHERE cedula = cedula;
 END;
 DELIMITER //
-
-
 
 -- Puntos de entrega
 DELIMITER //
