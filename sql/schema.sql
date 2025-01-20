@@ -167,7 +167,7 @@ create table unidades_trabajo(
 CREATE TABLE Rutas (
     ID_ruta INT PRIMARY KEY auto_increment,
     hora_inicio DATETIME NOT NULL,
-    hora_final DATETIME NOT NULL,
+    hora_final DATETIME,
     distancia DOUBLE,
     estado bit default 0,
     cedula_c INT,

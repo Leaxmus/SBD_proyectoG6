@@ -251,7 +251,7 @@ END;
 // DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE UpdateUnidadTrabajo (
+CREATE PROCEDURE UpdateUnidadTrabajo ( 
     IN p_cedula_c INT,
     IN p_cedula_a INT,
     IN p_placa VARCHAR(10),
@@ -275,3 +275,355 @@ BEGIN
     WHERE cedula_c = p_cedula_c AND cedula_a = p_cedula_a;
 END;
 // DELIMITER ;
+
+
+-- Elkin 
+-- Ruta
+DELIMITER //
+
+CREATE PROCEDURE InsertarRuta(IN p_id_ruta INT,IN p_hora_inicio DATETIME,IN p_hora_final DATETIME,IN p_placa_vehiculo VARCHAR(10),IN p_distancia INT,IN p_estado INT)
+BEGIN
+    DECLARE placa_existente INT;
+    START TRANSACTION;
+    -- Validar que la placa no se repita en una ruta activa
+    SELECT COUNT(*) INTO placa_existente
+    FROM Rutas
+    WHERE placa_vehiculo = p_placa_vehiculo AND estado = 1;  -- 1 indica que la ruta está activa
+
+    IF placa_existente > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La placa del vehículo ya está asignada a una ruta activa.';
+    END IF;
+    INSERT INTO Rutas (ID_ruta, hora_inicio, hora_final, placa_vehiculo, distancia, estado)
+    VALUES (p_id_ruta, p_hora_inicio, p_hora_final, p_placa_vehiculo, p_distancia, p_estado);
+    COMMIT;
+END;
+DELIMITER //
+
+-- actualizar ruta 
+DELIMITER //
+CREATE PROCEDURE ActualizarRuta(IN p_id_ruta INT, IN p_hora_inicio DATETIME, IN p_hora_final DATETIME, IN p_distancia DOUBLE)
+BEGIN
+    DECLARE ruta_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO ruta_existente
+    FROM Rutas
+    WHERE ID_ruta = p_id_ruta;
+    IF ruta_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La ruta no existe.';
+    END IF;
+    UPDATE Rutas
+    SET hora_inicio = p_hora_inicio, hora_final = p_hora_final, distancia = p_distancia
+    WHERE ID_ruta = p_id_ruta;
+    COMMIT;
+END;
+DELIMITER //
+
+
+-- elimiar ruta
+DELIMITER //
+
+CREATE PROCEDURE EliminarRuta(IN p_id_ruta INT)
+BEGIN
+    DECLARE entregas_existentes INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO entregas_existentes
+    FROM Entregas
+    WHERE ID_ruta = p_id_ruta;
+    IF entregas_existentes > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede eliminar la ruta porque tiene entregas asociadas.';
+    END IF;
+    DELETE FROM Rutas
+    WHERE ID_ruta = p_id_ruta;
+    COMMIT;
+END ;
+DELIMITER //
+
+
+-- nueva entrega 
+DELIMITER //
+CREATE PROCEDURE InsertarEntrega(IN p_id_entrega INT, IN p_fecha_entrega DATETIME, IN p_estado INT, IN p_valor_total DECIMAL(10,2), IN p_id_ruta INT, IN p_id_cliente INT, IN p_firma VARCHAR(255))
+BEGIN
+    START TRANSACTION;
+    IF p_estado = 1 AND p_firma IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Las entregas completadas deben tener una firma.';
+    END IF;
+    INSERT INTO Entregas (ID_entrega, fecha_entrega, estado, valor_total, ID_ruta, ID_cliente, firma)
+    VALUES (p_id_entrega, p_fecha_entrega, p_estado, p_valor_total, p_id_ruta, p_id_cliente, p_firma);
+    COMMIT;
+END ;
+
+DELIMITER //
+
+-- actualizar entrega 
+DELIMITER //
+CREATE PROCEDURE ActualizarEntrega(IN p_id_entrega INT,IN p_fecha_entrega DATETIME,IN p_estado INT,IN p_valor_total DECIMAL(10,2),IN p_firma VARCHAR(255))
+BEGIN
+    START TRANSACTION;
+    IF p_estado = 1 AND p_firma IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Las entregas completadas deben tener una firma.';
+    END IF;
+    -- Actualizar la entrega
+    UPDATE Entregas
+    SET fecha_entrega = p_fecha_entrega,
+        estado = p_estado,
+        valor_total = p_valor_total,
+        firma = p_firma
+    WHERE ID_entrega = p_id_entrega;
+    COMMIT;
+END ;
+DELIMITER //
+
+
+-- eliminar entrega
+DELIMITER //
+CREATE PROCEDURE EliminarEntrega(IN p_id_entrega INT)
+BEGIN
+    DECLARE firma_null INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO firma_null
+    FROM Entregas
+    WHERE ID_entrega = p_id_entrega AND firma_entrega IS NOT NULL;
+    IF firma_null = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La entrega no existe o no tiene firma de recepción.';
+    END IF;
+    DELETE FROM Entregas WHERE ID_entrega = p_id_entrega;
+    COMMIT;
+END ;
+
+DELIMITER //
+
+
+--Ruta alternas
+DElimiter //
+CREATE PROCEDURE InsertarRutaAlternativa(IN p_id_ruta INT,IN p_id_ruta_a INT)
+BEGIN
+    DECLARE ruta_existente INT;
+    START TRANSACTION;
+    -- Validar que las rutas existan
+    SELECT COUNT(*) INTO ruta_existente
+    FROM Rutas
+    WHERE ID_ruta IN (p_id_ruta, p_id_ruta_a);
+    IF ruta_existente < 2 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Una o ambas rutas no existen.';
+    END IF;
+    -- Insertar la ruta alternativa
+    INSERT INTO Rutas_alternativas (ID_ruta, ID_ruta_a) VALUES (p_id_ruta, p_id_ruta_a);
+    COMMIT;
+END ;
+DELIMITER //
+
+
+DELIMITER //
+CREATE PROCEDURE ActualizarRutaAlternativa(IN p_id_ruta INT,IN p_id_ruta_a INT)
+BEGIN
+    DECLARE ruta_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO ruta_existente
+    FROM Rutas
+    WHERE ID_ruta IN (p_id_ruta, p_id_ruta_a);
+    IF ruta_existente < 2 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Una o ambas rutas no existen.';
+    END IF;
+    UPDATE Rutas_alternativas 
+    SET ID_ruta_a = p_id_ruta_a 
+    WHERE ID_ruta = p_id_ruta;
+    COMMIT;
+END ;
+DELIMITER //
+
+
+DELIMITER //
+CREATE PROCEDURE EliminarRutaAlternativa(IN p_id_ruta INT,IN p_id_ruta_a INT)
+BEGIN
+    DELETE FROM Rutas_alternativas 
+    WHERE ID_ruta = p_id_ruta AND ID_ruta_a = p_id_ruta_a;
+END ;
+DELIMITER //
+
+
+DELIMITER //
+-- Insertar en Gerentes_Operaciones
+CREATE PROCEDURE insertar_gerente_operaciones(IN cedula INT,IN primer_nombre VARCHAR(50),IN segundo_nombre VARCHAR(50),IN primer_apellido VARCHAR(50),IN segundo_apellido VARCHAR(50),IN telefono VARCHAR(15),IN correo VARCHAR(100))
+BEGIN
+    START TRANSACTION;
+    DECLARE gerente_existente INT;
+    START TRANSACTION;
+    -- Validar que no exista un gerente con la misma cédula
+    SELECT COUNT(*) INTO gerente_existente
+    FROM Gerentes_operaciones
+    WHERE cedula = p_cedula;
+    IF gerente_existente > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe un gerente con esta cédula.';
+    END IF;
+    INSERT INTO Gerentes_Operaciones(cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo)
+    VALUES(cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo);
+    COMMIT;
+END ;
+DELIMITER //
+
+
+DElimiter //
+CREATE PROCEDURE actualizar_gerente_operaciones(IN cedula INT,IN primer_nombre VARCHAR(50),IN segundo_nombre VARCHAR(50),IN primer_apellido VARCHAR(50),IN segundo_apellido VARCHAR(50),IN telefono VARCHAR(15),IN correo VARCHAR(100))
+BEGIN
+    START TRANSACTION;
+    UPDATE Gerentes_Operaciones
+    SET primer_nombre = primer_nombre,
+        segundo_nombre = segundo_nombre,
+        primer_apellido = primer_apellido,
+        segundo_apellido = segundo_apellido,
+        telefono = telefono,
+        correo = correo
+    WHERE cedula = cedula;
+    COMMIT;
+END ;
+DELIMITER //
+
+DELIMITER //
+
+CREATE PROCEDURE eliminar_gerente_operaciones(IN cedula INT)
+BEGIN
+    DELETE FROM Gerentes_Operaciones
+    WHERE cedula = cedula;
+END;
+DELIMITER //
+
+-- Puntos de entrega
+DELIMITER //
+CREATE PROCEDURE InsertarPuntoEntrega(IN p_id_punto INT,IN p_direccion VARCHAR(255))
+BEGIN
+    START TRANSACTION;
+    INSERT INTO Puntos_entrega (id_punto_entrega, direccion_punto) 
+    VALUES (p_id_punto, p_direccion);
+    COMMIT;
+END ;
+DELIMITER //
+
+DELIMITER //
+CREATE PROCEDURE ActualizarPuntoEntrega(IN p_id_punto INT,IN p_direccion VARCHAR(255))
+BEGIN
+    START TRANSACTION;
+    UPDATE Puntos_entrega 
+    SET direccion_punto = p_direccion
+    WHERE id_punto_entrega = p_id_punto;
+    COMMIT;
+END ;
+DELIMITER//
+
+DELIMITER //
+
+CREATE PROCEDURE EliminarPuntoEntrega(IN p_id_punto INT)
+BEGIN
+    DELETE FROM Puntos_entrega WHERE id_punto_entrega = p_id_punto;
+END ;
+DELIMITER //
+
+-- Cliente 
+DELIMITER //
+CREATE PROCEDURE InsertarCliente(IN p_razon_social VARCHAR(255), IN p_telefono VARCHAR(20),IN p_direccion VARCHAR(255), IN p_correo VARCHAR(100), IN p_cedula INT)
+BEGIN
+    DECLARE cliente_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO cliente_existente
+    FROM Clientes
+    WHERE cedula = p_cedula;
+    IF cliente_existente > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe un cliente con esta cédula.';
+    END IF;
+    -- Insertar el nuevo cliente
+    INSERT INTO Clientes (razon_social, telefono, direccion, correo, cedula) 
+    VALUES (p_razon_social, p_telefono, p_direccion, p_correo, p_cedula);
+    COMMIT;
+END;
+DELIMITER //
+
+DELIMITER //
+CREATE PROCEDURE ActualizarCliente(IN p_id_cliente INT, IN p_razon_social VARCHAR(255), IN p_telefono VARCHAR(20), IN p_direccion VARCHAR(255),IN p_correo VARCHAR(100))
+BEGIN
+    DECLARE cliente_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO cliente_existente
+    FROM Clientes
+    WHERE ID_cliente = p_id_cliente;
+    IF cliente_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El cliente no existe.';
+    END IF;
+    -- Actualizar los datos del cliente
+    UPDATE Clientes
+    SET razon_social = p_razon_social, telefono = p_telefono, direccion = p_direccion, correo = p_correo
+    WHERE ID_cliente = p_id_cliente;
+    COMMIT;
+END;
+DELIMITER //
+
+DELIMITER //
+CREATE PROCEDURE EliminarCliente(IN p_id_cliente INT)
+BEGIN
+    DECLARE cliente_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO cliente_existente
+    FROM Clientes
+    WHERE ID_cliente = p_id_cliente;
+    IF cliente_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El cliente no existe.';
+    END IF;
+    DELETE FROM Clientes WHERE ID_cliente = p_id_cliente;
+    COMMIT;
+END;
+DELIMITER //
+
+
+-- gerente de ventas 
+DELIMITER //
+CREATE PROCEDURE InsertarGerenteVentas(IN p_cedula INT, IN p_primer_nombre VARCHAR(50), IN p_segundo_nombre VARCHAR(50), IN p_primer_apellido VARCHAR(50), IN p_segundo_apellido VARCHAR(50), IN p_telefono VARCHAR(15), IN p_correo VARCHAR(100))
+BEGIN
+    DECLARE gerente_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO gerente_existente
+    FROM Gerentes_ventas
+    WHERE cedula = p_cedula;
+    IF gerente_existente > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe un gerente de ventas con esta cédula.';
+    END IF;
+    INSERT INTO Gerentes_ventas (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo) 
+    VALUES (p_cedula, p_primer_nombre, p_segundo_nombre, p_primer_apellido, p_segundo_apellido, p_telefono, p_correo);
+    COMMIT;
+END;
+DELIMITER //
+
+
+
+DELIMITER //
+CREATE PROCEDURE ActualizarGerenteVentas(IN p_cedula INT, IN p_primer_nombre VARCHAR(50), IN p_segundo_nombre VARCHAR(50),IN p_primer_apellido VARCHAR(50), IN p_segundo_apellido VARCHAR(50), IN p_telefono VARCHAR(15), IN p_correo VARCHAR(100))
+BEGIN
+    DECLARE gerente_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO gerente_existente
+    FROM Gerentes_ventas
+    WHERE cedula = p_cedula;
+    IF gerente_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El gerente de ventas no existe.';
+    END IF;
+    -- Actualizar los datos del gerente
+    UPDATE Gerentes_ventas
+    SET primer_nombre = p_primer_nombre, segundo_nombre = p_segundo_nombre, primer_apellido = p_primer_apellido,
+        segundo_apellido = p_segundo_apellido, telefono = p_telefono, correo = p_correo
+    WHERE cedula = p_cedula;
+    COMMIT;
+END;
+DELIMITER //
+
+DELIMITER //
+CREATE PROCEDURE EliminarGerenteVentas(IN p_cedula INT)
+BEGIN
+    DECLARE gerente_existente INT;
+    START TRANSACTION;
+    SELECT COUNT(*) INTO gerente_existente
+    FROM Gerentes_ventas
+    WHERE cedula = p_cedula;
+    IF gerente_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El gerente de ventas no existe.';
+    END IF;
+    DELETE FROM Gerentes_ventas WHERE cedula = p_cedula;
+    COMMIT;
+END;
+DELIMITER //
