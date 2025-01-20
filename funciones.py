@@ -105,8 +105,8 @@ def eliminar_producto():
 
 def eliminar_almacen():
     id_almacen = 0
-    while id_almacen < 1 or id_almacen > 10:
-        id_almacen = validar_numero(input("Ingrese el ID del almacén a eliminar(1-10): "))
+    while id_almacen < 1 or id_almacen > 11:
+        id_almacen = validar_numero(input("Ingrese el ID del almacén a eliminar: "))
 
     return (id_almacen,)
 
