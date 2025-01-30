@@ -180,7 +180,7 @@ insert into inventario values
 (7, 1, 0),
 (8, 1, 0);
 
-INSERT INTO Clientes (ID_cliente, razon_social, telefono, direccion, correo, cedula) VALUES
+INSERT INTO Clientes (ID_cliente, razon_social, telefono, direccion, correo, cedulaG) VALUES
 (1, 'Hospital XYZ', '0981234567', 'Calle 123, Quito', 'cliente1@gmail.com', 1723456789),
 (2, 'Industria ABC', '0971234568', 'Avenida Siempre Viva', 'cliente2@outlook.com', 1729876543),
 (3, 'Empresa Delta', '0969876543', 'Av. Amazonas, Cuenca', 'cliente3@gmail.com', 1712345678),
@@ -205,7 +205,7 @@ insert into unidades_trabajo values
 (0990120123, 0807654321, null, 'PTU7181');
 
 INSERT INTO Rutas VALUES 
-(1, '2024-06-01 08:00:00', '2024-06-01 12:00:00', 150.5, 0, 0991231234, 1705432109, 'GBC1234', null, 0930786798),
+(1, '2024-06-01 08:00:00', '2024-06-01 12:00:00', 150.5, 0, 1, 0930786798),
 (2, '2024-06-02 09:00:00', '2024-06-02 13:00:00', 200.0, 1, 0992342345, 0921345670, 'GBC1234', null, 0941015903),
 (3, '2024-06-03 10:00:00', '2024-06-03 14:00:00', 300.5, 1, 0991231234, 1705432109, 'GEF5678', null, 0979342662),
 (4, '2024-06-04 11:00:00', '2024-06-04 15:00:00', 120.0, 0, 0993453456, 0612345678, null, 'GFG1234', 0935728939),

@@ -280,23 +280,26 @@ END;
 -- Elkin 
 -- Ruta
 DELIMITER //
-CREATE PROCEDURE InsertarRuta(IN p_id_ruta INT,IN p_hora_inicio DATETIME,IN p_hora_final DATETIME,IN p_placa_vehiculo VARCHAR(10),IN p_distancia INT,IN p_estado INT)
+CREATE PROCEDURE InsertarRuta(IN p_hora_inicio DATETIME,IN p_hora_final DATETIME,IN p_placa_vehiculo VARCHAR(10),IN p_distancia INT,IN p_estado INT,  IN p_cedula_operaciones INT)
 BEGIN
     DECLARE placa_existente INT;
     START TRANSACTION;
-    -- Validar que la placa no se repita en una ruta activa
+
     SELECT COUNT(*) INTO placa_existente
     FROM Rutas
-    WHERE placa_vehiculo = p_placa_vehiculo AND estado = 1;  -- 1 indica que la ruta está activa
+    WHERE placa = p_placa_vehiculo AND estado = 1;  -- 1 indica que la ruta está activa
 
     IF placa_existente > 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La placa del vehículo ya está asignada a una ruta activa.';
     END IF;
-    INSERT INTO Rutas (ID_ruta, hora_inicio, hora_final, placa_vehiculo, distancia, estado)
-    VALUES (p_id_ruta, p_hora_inicio, p_hora_final, p_placa_vehiculo, p_distancia, p_estado);
+
+    INSERT INTO Rutas (hora_inicio, hora_final, distancia, estado, placa,cedula_operaciones)
+    VALUES (p_hora_inicio, p_hora_final, p_distancia, p_estado, p_placa_vehiculo, p_);
+    
     COMMIT;
 END;
 // DELIMITER ;
+
 
 -- actualizar ruta 
 DELIMITER //
@@ -439,7 +442,7 @@ END ;
 
 DELIMITER //
 -- Insertar en Gerentes_Operaciones
-CREATE PROCEDURE insertar_gerente_operaciones(IN cedula INT,IN primer_nombre VARCHAR(50),IN segundo_nombre VARCHAR(50),IN primer_apellido VARCHAR(50),IN segundo_apellido VARCHAR(50),IN telefono VARCHAR(15),IN correo VARCHAR(100))
+CREATE PROCEDURE insertar_gerente_operaciones(IN p_cedula INT,IN primer_nombre VARCHAR(50),IN segundo_nombre VARCHAR(50),IN primer_apellido VARCHAR(50),IN segundo_apellido VARCHAR(50),IN telefono VARCHAR(15),IN correo VARCHAR(100))
 BEGIN
     DECLARE gerente_existente INT;
     START TRANSACTION;
@@ -474,19 +477,19 @@ END ;
 // DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE eliminar_gerente_operaciones(IN cedula INT)
+CREATE PROCEDURE eliminar_gerente_operaciones(IN p_cedula INT)
 BEGIN
     DELETE FROM Gerentes_Operaciones
-    WHERE cedula = cedula;
+    WHERE cedula = p_cedula;
 END;
 // DELIMITER ;
 
 -- Puntos de entrega
 DELIMITER //
-CREATE PROCEDURE InsertarPuntoEntrega(IN p_id_punto INT,IN p_direccion VARCHAR(255))
+CREATE PROCEDURE InsertarPuntoEntrega(IN p_id_punto INT , IN p_direccion VARCHAR(255))
 BEGIN
     START TRANSACTION;
-    INSERT INTO Puntos_entrega (id_punto_entrega, direccion_punto) 
+    INSERT INTO Puntos_entrega 
     VALUES (p_id_punto, p_direccion);
     COMMIT;
 END ;
@@ -497,34 +500,34 @@ CREATE PROCEDURE ActualizarPuntoEntrega(IN p_id_punto INT,IN p_direccion VARCHAR
 BEGIN
     START TRANSACTION;
     UPDATE Puntos_entrega 
-    SET direccion_punto = p_direccion
-    WHERE id_punto_entrega = p_id_punto;
+    SET dirección = p_direccion
+    WHERE ID_p_entrega = p_id_punto;
     COMMIT;
 END ;
 // DELIMITER ;
-
+DROP PROCEDURE EliminarPuntoEntrega;
 DELIMITER //
 CREATE PROCEDURE EliminarPuntoEntrega(IN p_id_punto INT)
 BEGIN
-    DELETE FROM Puntos_entrega WHERE id_punto_entrega = p_id_punto;
+    DELETE FROM Puntos_entrega WHERE ID_p_entrega = p_id_punto;
 END ;
 // DELIMITER ;
 
 -- Cliente 
 DELIMITER //
-CREATE PROCEDURE InsertarCliente(IN p_razon_social VARCHAR(255), IN p_telefono VARCHAR(20),IN p_direccion VARCHAR(255), IN p_correo VARCHAR(100), IN p_cedula INT)
+CREATE PROCEDURE InsertarCliente(IN p_razon_social VARCHAR(255), IN p_telefono VARCHAR(20), IN p_direccion VARCHAR(255), IN p_correo VARCHAR(100), IN p_cedulaG INT)
 BEGIN
     DECLARE cliente_existente INT;
     START TRANSACTION;
     SELECT COUNT(*) INTO cliente_existente
     FROM Clientes
-    WHERE cedula = p_cedula;
+    WHERE razon_social = p_razon_social;
     IF cliente_existente > 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe un cliente con esta cédula.';
     END IF;
     -- Insertar el nuevo cliente
-    INSERT INTO Clientes (razon_social, telefono, direccion, correo, cedula) 
-    VALUES (p_razon_social, p_telefono, p_direccion, p_correo, p_cedula);
+    INSERT INTO Clientes (razon_social, telefono, direccion, correo, cedulaG) 
+    VALUES (p_razon_social, p_telefono, p_direccion, p_correo, p_cedulaG);
     COMMIT;
 END;
 // DELIMITER ;

@@ -147,8 +147,8 @@ CREATE TABLE Clientes (
     telefono VARCHAR(20),
     direccion VARCHAR(255),
     correo VARCHAR(100),
-    cedula INT,
-    FOREIGN KEY (cedula) REFERENCES Gerentes_ventas(cedula)
+    cedulaG INT,
+    FOREIGN KEY (cedulaG) REFERENCES Gerentes_ventas(cedula)
 );
 
 create table unidades_trabajo(

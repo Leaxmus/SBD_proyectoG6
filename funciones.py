@@ -4,6 +4,14 @@ def validar_numero(cadena):
         cadena = input("Ingrese un número: ")
     return int(cadena)
 
+def validar_direccion(direccion):
+    if not direccion.strip():
+        raise ValueError("La dirección no puede estar vacía.")
+    if direccion.isdigit():
+        raise ValueError("La dirección no puede ser solo un número.")
+    return direccion
+
+
 def validar_decimal(cadena):
     while not cadena.replace(".", "", 1).isdigit():
         cadena = input("Ingrese un número decimal: ")
@@ -14,11 +22,12 @@ def menu():
     while usr1 < 1 or usr1 > 5:
         print("Desea")
         print("1. Crear registros")
-        print("2. Consultar registros")
+        print("2. Consultar General registros")
         print("3. Actualizar registros")
         print("4. Eliminar registros")
         print("5. Salir")
         usr1 = validar_numero(input("Ingrese el número de la opción deseada: "))
+    
 
     usr2 = 0
     while usr2 < 1 or usr2 > 12:
@@ -33,6 +42,8 @@ def menu():
         print("8. Auxiliar")
         print("9. Vehiculo")
         print("10. Unidad de trabajo")
+        print("11. Gerente de operaciones")
+        print("12. Gerente de ventas")
         usr2 = validar_numero(input("Ingrese el número de la opción deseada: "))
         
     return usr1, usr2
@@ -113,17 +124,16 @@ def eliminar_almacen():
 #Elkin
 #agregar ruta
 def agregar_ruta():
-    hora_inicio = input("Ingrese la hora de inicio (HH-MM): ")
-    hora_final = input("Ingrese la hora final (HH-MM): ")
+    hora_inicio = input("Ingrese la fecha de inicio (YYYY-MM-DD HH:MM:SS): ")
+    hora_final = input("Ingrese la fecha de finalización (YYYY-MM-DD HH:MM:SS): ")
     distancia = validar_decimal(input("Ingrese la distancia de la ruta (km): "))
-    estado = input("Ingrese el estado de la ruta (Activo/Inactivo): ")
-
+    estado = int(input("Ingrese el estado de la ruta (Activo -- 1 / Inactivo -- 0): "))
+    placaVehiculo = input("Ingrese el número de placa: ")
     cedula_operaciones = validar_numero(input("Ingrese la cédula del gerente de operaciones: "))
     query_ruta = """
-    CALL InsertarRuta(%s, %s, %s, %s, %s);
+    CALL InsertarRuta(%s, %s, %s, %s, %s, %s);
     """
-    datos_ruta = (hora_inicio, hora_final, distancia, estado, cedula_operaciones)
-    
+    datos_ruta = (hora_inicio, hora_final, placaVehiculo, distancia, estado, cedula_operaciones)
     return query_ruta, datos_ruta
 # consultar ruta (ejemplo GENERAL )
 def consultar_rutas():
@@ -132,16 +142,15 @@ def consultar_rutas():
 
 #actualizar ruta
 def actualizar_ruta():
-    id_ruta = validar_numero(input("Ingrese el ID de la ruta a actualizar: "))
-    hora_inicio = input("Ingrese la nueva hora de inicio (HH:MM): ")
-    hora_final = input("Ingrese la nueva hora final (HH:MM): ")
+    id_ruta = int(input("Ingrese el ID de la ruta a actualizar: "))
+    hora_inicio = input("Ingrese la nueva fecha de inicio (YYYY-MM-DD HH:MM:SS): ")
+    hora_final = input("Ingrese la nueva fecha final (YYYY-MM-DD HH:MM:SS): ")
     distancia = validar_decimal(input("Ingrese la nueva distancia de la ruta (km): "))
-    estado = input("Ingrese el nuevo estado de la ruta (Activo/Inactivo): ")
-
+    estado = int(input("Ingrese el nuevo estado de la ruta (Activo -- 1/Inactivo -- 0): "))
     query_ruta = """
     CALL ActualizarRuta(%s, %s, %s, %s, %s);
     """
-    datos_ruta = (hora_inicio, hora_final, distancia, estado, id_ruta)
+    datos_ruta = (id_ruta,hora_inicio, hora_final, distancia, estado)
 
     return query_ruta, datos_ruta
 
@@ -151,19 +160,15 @@ def eliminar_ruta():
     query_ruta = """
     CALL EliminarRuta(%s);
     """
-    datos_ruta = (id_ruta,)
+    datos_ruta = (id_ruta)
     return query_ruta, datos_ruta
 
 
 #agregar punto de entrega
 def agregar_punto_entrega():
-    direccion = input("Ingrese la dirección del punto de entrega: ")
     id_ruta = validar_numero(input("Ingrese el ID de la ruta asociada: "))
-    query_punto = """
-    CALL InsertarPuntoEntrega(%s, %s);
-    """
-    datos_punto = (direccion, id_ruta)
-    return query_punto, datos_punto
+    direccion = validar_direccion(input("Ingrese la dirección del punto de entrega: "))
+    return id_ruta,direccion
 
 #consultar puntos de entrega
 def consultar_puntos_entrega():
@@ -174,21 +179,16 @@ def consultar_puntos_entrega():
 def actualizar_punto_entrega():
     id_punto = validar_numero(input("Ingrese el ID del punto de entrega a actualizar: "))
     direccion = input("Ingrese la nueva dirección del punto de entrega: ")
-    id_ruta = validar_numero(input("Ingrese el nuevo ID de la ruta asociada: "))
     query_punto = """
-    CALL ActualizarPuntoEntrega(%s, %s, %s);
+    CALL ActualizarPuntoEntrega(%s, %s, );
     """
-    datos_punto = (direccion, id_ruta, id_punto)
+    datos_punto = (id_punto,direccion)
     return query_punto, datos_punto
 
 #elimitar punto de entrega
 def eliminar_punto_entrega():
     id_punto = validar_numero(input("Ingrese el ID del punto de entrega a eliminar: "))
-    query_punto = """
-    CALL EliminarPuntoEntrega(%s);
-    """
-    datos_punto = (id_punto)
-    return query_punto, datos_punto
+    return  id_punto
 
 #agregar cliente
 def InsertarCliente():
@@ -196,11 +196,11 @@ def InsertarCliente():
     telefono = input("Ingrese el teléfono del cliente: ")
     direccion = input("Ingrese la dirección del cliente: ")
     correo = input("Ingrese el correo electrónico del cliente: ")
-    cedulaC = validar_numero(input("Ingrese la cédula del Cliente: "))
+    cedulaG = validar_numero(input("Ingrese la cédula del Gerente de Ventas: "))
     query_cliente = """
-    CALL agregar_cliente(%s, %s, %s, %s,%s);
+    CALL InsertarCliente(%s, %s, %s, %s, %s);
     """
-    datos_cliente = (razon_social, telefono, direccion, correo,cedulaC)
+    datos_cliente = (razon_social, telefono, direccion, correo, cedulaG)
     return query_cliente, datos_cliente
 
 #consultar cliente TOTALES(GENERAL )
@@ -218,7 +218,7 @@ def actualizar_cliente():
     query_cliente = """
     CALL ActualizarCliente(%s, %s, %s, %s, %s);
     """
-    datos_cliente = (razon_social, telefono, direccion, correo, id_cliente)
+    datos_cliente = (id_cliente,razon_social, telefono, direccion, correo)
     return query_cliente, datos_cliente
 
 #eliminar cliente
@@ -227,8 +227,8 @@ def eliminar_cliente():
     query_cliente = """
     CALL EliminarCliente(%s);
     """
-    datos_cliente = (id_cliente,)
-    return query_cliente, datos_cliente
+    datos_cliente = (id_cliente,)  
+    return datos_cliente
 
 #agregar entrega
 def agregar_entrega():
@@ -239,11 +239,13 @@ def agregar_entrega():
     id_ruta = validar_numero(input("Ingrese el ID de la ruta asociada: "))
     id_cliente = validar_numero(input("Ingrese el ID del cliente asociado: "))
     firma = input("Ingrese el nombre de la firma del receptor (dejar vacío si no aplica): ")
-    query_agregar_entrega = """
-    CALL InsertarEntrega(%s, %s, %s, %s, %s, %s, %s);
-    """
-    args_entrega = (id_entrega, fecha_entrega, estado, valor_total, id_ruta, id_cliente, firma if firma else None)
-    return query_agregar_entrega, args_entrega
+
+    firma = firma if firma else None
+
+    args_entrega = (id_entrega, fecha_entrega, estado, valor_total, id_ruta, id_cliente, firma)
+    
+    return args_entrega
+
 
 
 def agregar_detalle_entrega(id_entrega):
@@ -475,3 +477,84 @@ def eliminar_unidad_trabajo():
     datos_unidad_trabajo = (cedula_conductor, cedula_auxiliar)
     
     return query_unidad_trabajo, datos_unidad_trabajo
+
+
+def insertar_gerente_operaciones():
+    cedula = validar_numero(input("Ingrese la cédula del gerente: "))
+    primer_nombre = input("Ingrese el primer nombre del gerente: ")
+    segundo_nombre = input("Ingrese el segundo nombre del gerente (opcional): ")
+    primer_apellido = input("Ingrese el primer apellido del gerente: ")
+    segundo_apellido = input("Ingrese el segundo apellido del gerente (opcional): ")
+    telefono = input("Ingrese el teléfono del gerente: ")
+    correo = input("Ingrese el correo del gerente: ")
+    query_gerente = """
+    CALL insertar_gerente_operaciones(%s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_gerente = (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo)
+    return query_gerente, datos_gerente
+
+def actualizar_gerente_operaciones():
+    cedula = validar_numero(input("Ingrese la cédula del gerente a actualizar: "))
+    primer_nombre = input("Ingrese el nuevo primer nombre del gerente: ")
+    segundo_nombre = input("Ingrese el nuevo segundo nombre del gerente (opcional): ")
+    primer_apellido = input("Ingrese el nuevo primer apellido del gerente: ")
+    segundo_apellido = input("Ingrese el nuevo segundo apellido del gerente (opcional): ")
+    telefono = input("Ingrese el nuevo teléfono del gerente: ")
+    correo = input("Ingrese el nuevo correo del gerente: ")
+    query_gerente = """
+    CALL actualizar_gerente_operaciones(%s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_gerente = (cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo)
+    
+    return query_gerente, datos_gerente
+
+def eliminar_gerente_operaciones():
+    cedula = validar_numero(input("Ingrese la cédula del gerente a eliminar: "))
+    query_gerente = """
+    CALL eliminar_gerente_operaciones(%s);
+    """
+    datos_gerente = (cedula,)
+    return datos_gerente
+
+def insertar_gerente_ventas():
+    p_cedula = int(input("Ingrese la cédula del gerente de ventas: "))
+    p_primer_nombre = input("Ingrese el primer nombre del gerente: ")
+    p_segundo_nombre = input("Ingrese el segundo nombre del gerente: ")
+    p_primer_apellido = input("Ingrese el primer apellido del gerente: ")
+    p_segundo_apellido = input("Ingrese el segundo apellido del gerente: ")
+    p_telefono = input("Ingrese el teléfono del gerente: ")
+    p_correo = input("Ingrese el correo electrónico del gerente: ")
+
+    query_gerente = """
+    CALL InsertarGerenteVentas(%s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_gerente = (p_cedula, p_primer_nombre, p_segundo_nombre, p_primer_apellido, p_segundo_apellido, p_telefono, p_correo)
+    
+    return query_gerente, datos_gerente
+
+def actualizar_gerente_ventas():
+    p_cedula = int(input("Ingrese la cédula del gerente de ventas a actualizar: "))
+    p_primer_nombre = input("Ingrese el nuevo primer nombre del gerente: ")
+    p_segundo_nombre = input("Ingrese el nuevo segundo nombre del gerente: ")
+    p_primer_apellido = input("Ingrese el nuevo primer apellido del gerente: ")
+    p_segundo_apellido = input("Ingrese el nuevo segundo apellido del gerente: ")
+    p_telefono = input("Ingrese el nuevo teléfono del gerente: ")
+    p_correo = input("Ingrese el nuevo correo electrónico del gerente: ")
+
+    query_gerente = """
+    CALL ActualizarGerenteVentas(%s, %s, %s, %s, %s, %s, %s);
+    """
+    datos_gerente = (p_cedula, p_primer_nombre, p_segundo_nombre, p_primer_apellido, p_segundo_apellido, p_telefono, p_correo)
+    
+    return query_gerente, datos_gerente
+
+
+def eliminar_gerente_ventas():
+    p_cedula = int(input("Ingrese la cédula del gerente de ventas a eliminar: "))
+    
+    query_gerente = """
+    CALL EliminarGerenteVentas(%s);
+    """
+    datos_gerente = (p_cedula,)
+    
+    return datos_gerente
