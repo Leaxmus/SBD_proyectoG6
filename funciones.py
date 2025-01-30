@@ -124,7 +124,7 @@ def actualizar_almacen():
 
 def eliminar_producto():
     id_producto = 0
-    while id_producto < 1 or id_producto > 10:
+    while id_producto < 1 or id_producto > 11:
         id_producto = validar_numero(input("Ingrese el ID del producto a eliminar(1-10): "))
 
     return (id_producto,)
