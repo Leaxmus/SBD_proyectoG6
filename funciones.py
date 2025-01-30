@@ -19,17 +19,21 @@ def validar_decimal(cadena):
 
 def menu():
     usr1 = 0
-    while usr1 < 1 or usr1 > 5:
+    while usr1 < 1 or usr1 > 6:
         print("Desea")
         print("1. Crear registros")
         print("2. Consultar General registros")
         print("3. Actualizar registros")
         print("4. Eliminar registros")
-        print("5. Salir")
+        print("5. Reportes")
+        print("6. Salir")
         usr1 = validar_numero(input("Ingrese el número de la opción deseada: "))
     
 
     usr2 = 0
+    if usr1 == 6 or usr1 == 5:
+        return usr1, usr2
+    
     while usr2 < 1 or usr2 > 12:
         print("Para")
         print("1. Productos")
@@ -47,6 +51,17 @@ def menu():
         usr2 = validar_numero(input("Ingrese el número de la opción deseada: "))
         
     return usr1, usr2
+
+def menu_reportes():
+    usr = 0
+    while usr < 1 or usr > 5:
+        print("1. Reporte de productos por almacén")
+        print("2. Reporte de movimientos de productos")
+        print("3. Reporte de total productos")
+        print("4. Productos entregados por cliente")
+        print("5. Regresar")
+        usr = validar_numero(input("Ingrese el número de la opción deseada: "))
+    return usr
 
 def agregar_producto():
     nombre = input("Ingrese el nombre del producto: ")

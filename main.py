@@ -3,13 +3,34 @@ from mysql.connector import errorcode
 import funciones as f
 
 try:
-    cnx = mysql.connector.connect(user='root', password='admin', host='localhost', database='transporte')
+    cnx = mysql.connector.connect(user='root', password='1234', host='localhost', database='transporte')
     cursor = cnx.cursor()
     
     opcion = 0
-    while opcion != 5:
+    while opcion != 6:
         opcion, tabla = f.menu()
         
+        if opcion == 5:
+            usr = f.menu_reportes()
+            if usr == 1:
+                cursor.execute("SELECT * FROM reporteProductosAlmacen")
+                for resultado in cursor:
+                    print(resultado)
+            elif usr == 2:
+                cursor.execute("SELECT * FROM ReporteMovimientosProductos")
+                for resultado in cursor:
+                    print(resultado)
+            elif usr == 3:
+                cursor.execute("SELECT * FROM ReporteTotalProductos")
+                for resultado in cursor:
+                    print(resultado)
+            elif usr == 4:
+                cursor.execute("SELECT * FROM ReporteProductosEntrega")
+                for resultado in cursor:
+                    print(resultado)
+            elif usr == 5:
+                opcion = 0
+                tabla = 0
         # Producto
         if tabla == 1:
             if opcion == 1:
@@ -287,6 +308,7 @@ try:
                print("-----------------------------------")
                
         cnx.commit()
+    print("Adios")
 
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
